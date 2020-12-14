@@ -1,2 +1,0 @@
-# term_project
-GEN2020_Term_Project_Code
