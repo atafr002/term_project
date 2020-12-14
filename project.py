@@ -73,7 +73,6 @@ for chr_id in chrs.keys():
 	chr_str_for = chrs[str(chr_id)][0]
 	chr_str_rev = chrs[str(chr_id)][1]
 	print("%s\n" %(chr_id))
-#	f.write("%s\n\n" %(chr_id))
 
 	for i in range(0,len(genes)):
 		if genes[i].seqid == chr_id:
@@ -84,8 +83,6 @@ for chr_id in chrs.keys():
 			if genes[i].strand == "+":
 				start = genes[i].start
 				end = genes[i].start + 300
-
-#			if genes[i].seqid == chr_id:
 
 				gRNA_gene = chr_str_for[start:end]
 
@@ -154,7 +151,6 @@ for chr_id in chrs.keys():
 				start = genes[i].stop
 				end = start - 300
 
-#			if genes[i].seqid == chr_id:
 				gRNA_gene = chr_str_for[end:start]
 
 				for i in range(23, len(gRNA_gene)):
