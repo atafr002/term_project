@@ -41,8 +41,8 @@ with gzip.open(file_gff, "rt") as file:
 gffutils.create_db(data, dbfn='GS115_db.db', force=True, from_string=True,merge_strategy="merge")
 
 #Defining a dictionary with chromosome IDs as dictionary keys and a list of dictionary values consisting of 
-#dict.value[0] = forward chromosome strand
-#dict.value[1] = reverse chromosome strand
+#dict.value[0] = positive chromosome strand
+#dict.value[1] = negative chromosome strand
 chrs = {}
 with gzip.open(file_fasta, "rt") as file:
 	seqs = aspairs(file)
@@ -61,9 +61,9 @@ with gzip.open(file_fasta, "rt") as file:
 		chr.append(chr_str_rev)
 		chrs[str(chr_id)] = chr
 
-#Choosing only "genes" rows from the GFF file
+#Choosing only "CDS" rows from the GFF file to avoid designing gRNAs located on introns:
 db = gffutils.FeatureDB('GS115_db.db', keep_order=True)
-gene_features = db.features_of_type("gene")
+gene_features = db.features_of_type("CDS")
 genes = list(gene_features)
 
 f=open("GS115_gRNA.txt","a+")
@@ -107,12 +107,12 @@ for chr_id in chrs.keys():
 								continue
 						GC_Per_FWD = ("%f" %(((G + C)/20)*100))
 
-#Assessment of the uniqeness of each gRNA in the chromosome:
+#Applying some filters on found gRNAs before writing them out on the output file:
 						if float(GC_Per_FWD) <= 50.0000 and len(re.findall(r'TTT[T]+', gRNA_FWD)) < 1 and len(re.findall(gRNA_FWD, chr_str_for)) == 1 and\
 						len(re.findall(gRNA_FWD, chr_str_rev)) == 0:
 							f.write("\t\t\t\t%s\t%s\t%s\n" %(PAM_FWD, gRNA_FWD, GC_Per_FWD))
 
-#Finds PAM and gRNA in the reverse strand:
+#Finds PAM and gRNA in the negative strand:
 				reversed_gRNA_gene = (''.join(reversed(gRNA_gene)))
 				gRNA_gene_rev = []
 				for i in range(0,len(reversed_gRNA_gene)):
@@ -175,7 +175,7 @@ for chr_id in chrs.keys():
 						len(re.findall(gRNA_FWD, chr_str_rev)) == 0:
 							f.write("\t\t\t\t%s\t%s\t%s\n" %(PAM_FWD, gRNA_FWD, GC_Per_FWD))
 
-#Finds the PAM and gRNAs in the reverse strand:
+#Finds the PAM and gRNAs in the negative strand:
 				reversed_gRNA_gene = (''.join(reversed(gRNA_gene)))
 				gRNA_gene_rev_str = []
 				for i in range(0, len(reversed_gRNA_gene)):
